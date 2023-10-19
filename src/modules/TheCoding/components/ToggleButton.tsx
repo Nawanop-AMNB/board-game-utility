@@ -13,7 +13,7 @@ export default function ToggleButton({
     <div className="p-2">
       <button
         className={clsx(
-          "w-full h-16 text-xl border uppercase rounded-md",
+          "w-full h-10 text-xl border uppercase rounded-md",
           active ? "text-slate-700 border-slate-900" : "border-slate-500"
         )}
         onClick={toggle}

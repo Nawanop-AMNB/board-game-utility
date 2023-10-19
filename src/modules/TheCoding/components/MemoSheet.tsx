@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import ToggleButton from "./ToggleButton";
 
-const defaultRecord: Record<string, boolean> = {
+const defaultAlphabetRecord: Record<string, boolean> = {
   a: false,
   b: false,
   c: false,
   d: false,
   e: false,
   f: false,
+};
+const defaultNumberRecord: Record<string, boolean> = {
   0: false,
   1: false,
   2: false,
@@ -22,11 +24,16 @@ const defaultRecord: Record<string, boolean> = {
 
 export default function MemoSheet() {
   const [name, setName] = useState("");
-  const [alphabetRecord, setAlphabetRecord] = useState(defaultRecord);
+  const [alphabetRecord, setAlphabetRecord] = useState(defaultAlphabetRecord);
+  const [number1Record, setNumber1Record] = useState(defaultNumberRecord);
+  const [number2Record, setNumber2Record] = useState(defaultNumberRecord);
 
-  function doToggle(code: string) {
+  function doToggle(
+    code: string,
+    dispatcher: Dispatch<React.SetStateAction<Record<string, boolean>>>
+  ) {
     return function () {
-      setAlphabetRecord((prev) => {
+      dispatcher((prev) => {
         return {
           ...prev,
           [code]: !prev[code],
@@ -52,19 +59,40 @@ export default function MemoSheet() {
           {Object.entries(alphabetRecord)
             .filter(([code]) => code.match("[a-f]"))
             .map(([code, active]) => (
-              <ToggleButton active={active} toggle={doToggle(code)}>
+              <ToggleButton
+                active={active}
+                toggle={doToggle(code, setAlphabetRecord)}
+              >
                 {code}
               </ToggleButton>
             ))}
         </div>
       </div>
       <div>
-        <div className="mb-2">Number:</div>
-        <div className="grid grid-flow-row grid-cols-3 grid-rows-4">
-          {Object.entries(alphabetRecord)
+        <div className="mb-2">Number X-1:</div>
+        <div className="grid grid-flow-row grid-cols-5 grid-rows-2">
+          {Object.entries(number1Record)
             .filter(([code]) => code.match("[0-9]"))
             .map(([code, active]) => (
-              <ToggleButton active={active} toggle={doToggle(code)}>
+              <ToggleButton
+                active={active}
+                toggle={doToggle(code, setNumber1Record)}
+              >
+                {code}
+              </ToggleButton>
+            ))}
+        </div>
+      </div>
+      <div>
+        <div className="mb-2">Number X-2:</div>
+        <div className="grid grid-flow-row grid-cols-5 grid-rows-2">
+          {Object.entries(number2Record)
+            .filter(([code]) => code.match("[0-9]"))
+            .map(([code, active]) => (
+              <ToggleButton
+                active={active}
+                toggle={doToggle(code, setNumber2Record)}
+              >
                 {code}
               </ToggleButton>
             ))}
