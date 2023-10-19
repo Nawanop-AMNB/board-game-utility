@@ -1,4 +1,10 @@
-import { Dispatch, useState } from "react";
+import {
+  Dispatch,
+  ForwardRefRenderFunction,
+  forwardRef,
+  useImperativeHandle,
+  useState,
+} from "react";
 import ToggleButton from "./ToggleButton";
 
 const defaultAlphabetRecord: Record<string, boolean> = {
@@ -22,7 +28,12 @@ const defaultNumberRecord: Record<string, boolean> = {
   9: false,
 };
 
-export default function MemoSheet() {
+type MemoSheetHandle = { reset: () => void };
+
+const MemoSheetWithRef: ForwardRefRenderFunction<MemoSheetHandle, unknown> = (
+  _,
+  ref
+) => {
   const [name, setName] = useState("");
   const [alphabetRecord, setAlphabetRecord] = useState(defaultAlphabetRecord);
   const [number1Record, setNumber1Record] = useState(defaultNumberRecord);
@@ -42,8 +53,18 @@ export default function MemoSheet() {
     };
   }
 
+  function reset() {
+    setAlphabetRecord(defaultAlphabetRecord);
+    setNumber1Record(defaultNumberRecord);
+    setNumber2Record(defaultNumberRecord);
+  }
+
+  useImperativeHandle(ref, () => ({
+    reset,
+  }));
+
   return (
-    <div className="flex flex-col gap-y-4 p-3 bg-slate-800">
+    <div className="flex flex-col gap-y-4 p-3 pb-5 bg-slate-800 rounded-md rounded-tl-none">
       <div className="flex flex-col gap-y-2">
         <label htmlFor="player-name-input">Name:</label>
         <input
@@ -68,36 +89,42 @@ export default function MemoSheet() {
             ))}
         </div>
       </div>
-      <div>
-        <div className="mb-2">Number X-1:</div>
-        <div className="grid grid-flow-row grid-cols-5 grid-rows-2">
-          {Object.entries(number1Record)
-            .filter(([code]) => code.match("[0-9]"))
-            .map(([code, active]) => (
-              <ToggleButton
-                active={active}
-                toggle={doToggle(code, setNumber1Record)}
-              >
-                {code}
-              </ToggleButton>
-            ))}
+      <div className="grid grid-flow-col grid-cols-2 gap-4">
+        <div>
+          <div className="mb-2">Number X-1:</div>
+          <div className="grid grid-flow-row grid-cols-2 grid-rows-5">
+            {Object.entries(number1Record)
+              .filter(([code]) => code.match("[0-9]"))
+              .map(([code, active]) => (
+                <ToggleButton
+                  active={active}
+                  toggle={doToggle(code, setNumber1Record)}
+                >
+                  {code}
+                </ToggleButton>
+              ))}
+          </div>
         </div>
-      </div>
-      <div>
-        <div className="mb-2">Number X-2:</div>
-        <div className="grid grid-flow-row grid-cols-5 grid-rows-2">
-          {Object.entries(number2Record)
-            .filter(([code]) => code.match("[0-9]"))
-            .map(([code, active]) => (
-              <ToggleButton
-                active={active}
-                toggle={doToggle(code, setNumber2Record)}
-              >
-                {code}
-              </ToggleButton>
-            ))}
+        <div>
+          <div className="mb-2">Number X-2:</div>
+          <div className="grid grid-flow-row grid-cols-2 grid-rows-5">
+            {Object.entries(number2Record)
+              .filter(([code]) => code.match("[0-9]"))
+              .map(([code, active]) => (
+                <ToggleButton
+                  active={active}
+                  toggle={doToggle(code, setNumber2Record)}
+                >
+                  {code}
+                </ToggleButton>
+              ))}
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+const MemoSheet = forwardRef(MemoSheetWithRef);
+
+export default MemoSheet;

@@ -1,15 +1,14 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import TheCoding from "./modules/TheCoding";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import Home from "./modules/Home";
-import { BASE_PATH } from "./config/constants";
+import TheCoding from "./modules/TheCoding";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
-    path: [BASE_PATH, "the-coding"].join("/"),
+    path: ["/the-coding"].join("/"),
     element: <TheCoding />,
   },
   {
-    path: [BASE_PATH].join("/"),
+    path: ["/"].join("/"),
     element: <Home />,
   },
   {
